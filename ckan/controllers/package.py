@@ -1324,6 +1324,9 @@ class PackageController(base.BaseController):
         return render('package/group_list.html',
                       {'dataset_type': dataset_type})
 
+    def _build_package_activity_stream(self, context, data_dict):
+        return get_action('package_activity_list_html')(context, {'id': c.pkg_dict['id']})
+
     def activity(self, id):
         '''Render this package's public activity stream page.'''
 
@@ -1334,9 +1337,7 @@ class PackageController(base.BaseController):
         try:
             c.pkg_dict = get_action('package_show')(context, data_dict)
             c.pkg = context['package']
-            c.package_activity_stream = get_action(
-                    'package_activity_list_html')(context,
-                            {'id': c.pkg_dict['id']})
+            c.package_activity_stream = self._build_package_activity_stream(context, data_dict)
             c.related_count = c.pkg.related_count
             dataset_type = c.pkg_dict['type'] or 'dataset'
         except NotFound:
