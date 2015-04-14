@@ -543,6 +543,10 @@ class UserController(base.BaseController):
             abort(401, _('Unauthorized to view followers %s') % '')
         return render('user/followers.html')
 
+    def _build_activity_stream(self, context, data_dict, offset):
+        return get_action('user_activity_list_html')(
+            context, {'id': c.user_dict['id'], 'offset': offset})
+
     def activity(self, id, offset=0):
         '''Render this user's public activity stream page.'''
 
@@ -558,8 +562,7 @@ class UserController(base.BaseController):
 
         self._setup_template_variables(context, data_dict)
 
-        c.user_activity_stream = get_action('user_activity_list_html')(
-            context, {'id': c.user_dict['id'], 'offset': offset})
+        c.user_activity_stream = self._build_activity_stream(context, data_dict, offset)
 
         return render('user/activity_stream.html')
 
