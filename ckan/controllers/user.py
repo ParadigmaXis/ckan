@@ -150,6 +150,9 @@ class UserController(base.BaseController):
 
         return self.new(data, errors, error_summary)
 
+    def _allow_batch_user_creation(self, user):
+        return False
+
     def new(self, data=None, errors=None, error_summary=None):
         '''GET to display a form for registering a new user.
            or POST the form data to actually do the user registration.
@@ -168,7 +171,7 @@ class UserController(base.BaseController):
         if context['save'] and not data:
             return self._save_new(context)
 
-        if c.user and not data:
+        if c.user and not data and not _allow_batch_user_creation(c.user):
             # #1799 Don't offer the registration form if already logged in
             return render('user/logout_first.html')
 
