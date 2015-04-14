@@ -132,6 +132,9 @@ class PackageController(base.BaseController):
 
         return pt
 
+    def _get_search_query(self, context, data_dict):
+        return get_action('package_search')(context, data_dict)
+
     def search(self):
         from ckan.lib.search import SearchError
 
@@ -267,7 +270,7 @@ class PackageController(base.BaseController):
                 'extras': search_extras
             }
 
-            query = get_action('package_search')(context, data_dict)
+            query = self._get_search_query(context, data_dict)
             c.sort_by_selected = query['sort']
 
             c.page = h.Page(
