@@ -224,6 +224,9 @@ class UserController(base.BaseController):
         h.flash_success(_('Profile updated'))
         h.redirect_to(controller='user', action='read', id=result['name'])
 
+    def _after_save_new(self, user, context):
+        pass
+
     def _save_new(self, context):
         try:
             data_dict = logic.clean_dict(unflatten(
@@ -231,6 +234,7 @@ class UserController(base.BaseController):
             context['message'] = data_dict.get('log_message', '')
             captcha.check_recaptcha(request)
             user = get_action('user_create')(context, data_dict)
+            _after_save_new(user, context)
         except NotAuthorized:
             abort(401, _('Unauthorized to create user %s') % '')
         except NotFound, e:
