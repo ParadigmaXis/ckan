@@ -171,7 +171,7 @@ class UserController(base.BaseController):
         if context['save'] and not data:
             return self._save_new(context)
 
-        if c.user and not data and not _allow_batch_user_creation(c.user):
+        if c.user and not data and not self._allow_batch_user_creation(c.user):
             # #1799 Don't offer the registration form if already logged in
             return render('user/logout_first.html')
 
@@ -234,7 +234,7 @@ class UserController(base.BaseController):
             context['message'] = data_dict.get('log_message', '')
             captcha.check_recaptcha(request)
             user = get_action('user_create')(context, data_dict)
-            _after_save_new(user, context)
+            self._after_save_new(user, context)
         except NotAuthorized:
             abort(401, _('Unauthorized to create user %s') % '')
         except NotFound, e:
