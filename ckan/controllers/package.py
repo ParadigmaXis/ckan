@@ -327,7 +327,7 @@ class PackageController(base.BaseController):
         ct, ext = accept.parse_header(request.headers.get('Accept', ''))
         return ct, ext
 
-    def resources(self, id):
+    def resources(self, id, resources_template='package/resources.html'):
         context = {'model': model, 'session': model.Session,
                    'user': c.user or c.author, 'for_view': True,
                    'auth_user_obj': c.userobj}
@@ -352,8 +352,7 @@ class PackageController(base.BaseController):
         self._setup_template_variables(context, {'id': id},
                                        package_type=package_type)
 
-        return render('package/resources.html',
-                      extra_vars={'dataset_type': package_type})
+        return render(resources_template, extra_vars={'dataset_type': package_type})
 
     def read(self, id, format='html'):
         if not format == 'html':
